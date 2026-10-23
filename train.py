@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 import random
+from pathlib import Path
 from torchvision import datasets
 from torchvision.transforms import ToTensor
 from torch.utils.data import DataLoader
@@ -11,6 +12,8 @@ from helper_functions import accuracy_fn
 device = "cuda" if torch.cuda.is_available() else "cpu"
 torch.manual_seed(42)
 BATCH_SIZE = 32
+IMG_DIR = Path(__file__).parent / "images"
+IMG_DIR.mkdir(exist_ok=True)
 
 
 # Setup training data
@@ -241,6 +244,7 @@ def plot_curves(history):
         ax.grid(alpha=0.3)
 
     plt.tight_layout()
+    fig.savefig(IMG_DIR / "curves.png", dpi=150, bbox_inches="tight")
     plt.show()
 
 plot_curves(history)
@@ -260,6 +264,7 @@ def make_prediction(model: torch.nn.Module, data):
 
 test_samples = list()
 test_lables = list()
+random.seed(42)
 for sample, lable in random.sample(list(test_data), k=9):
    test_samples.append(sample)
    test_lables.append(lable)
@@ -285,6 +290,8 @@ for i, sample in enumerate(test_samples):
    else:
       plt.title(title_text, fontsize=10, c="r") 
    plt.axis(False)
+
+plt.savefig(IMG_DIR / "predictions.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 
